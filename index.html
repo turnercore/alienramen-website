@@ -160,21 +160,110 @@
             .card {
                 position: relative;
                 z-index: 10;
+                max-width: 700px;
+                width: 92vw;
+                text-align: center;
+                transition:
+                    opacity 0.5s ease,
+                    transform 0.5s ease;
+                perspective: 1400px;
+            }
+            .card__inner {
+                position: relative;
+                width: 100%;
+                transform-style: preserve-3d;
+                transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            .card.is-flipped .card__inner {
+                transform: rotateY(180deg);
+            }
+            .card__face {
                 background: var(--card-bg);
                 border: 3px solid var(--orange);
                 outline: 2px solid var(--teal);
                 outline-offset: 5px;
                 padding: 36px 48px 32px;
-                max-width: 700px;
-                width: 92vw;
-                text-align: center;
                 box-shadow:
                     0 0 25px rgba(255, 140, 66, 0.45),
                     0 0 60px rgba(78, 205, 196, 0.2),
                     inset 0 0 50px rgba(0, 0, 0, 0.6);
-                transition:
-                    opacity 0.5s ease,
-                    transform 0.5s ease;
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+            }
+            .card__face--front {
+                position: relative;
+            }
+            .card__face--back {
+                position: absolute;
+                inset: 0;
+                transform: rotateY(180deg);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+            }
+            .cta-row {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+            .premake-title {
+                color: var(--teal);
+                font-size: 12px;
+                letter-spacing: 2px;
+                text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+            }
+            .premake-wrap {
+                width: min(100%, 512px);
+                aspect-ratio: 512 / 532;
+                border: 2px solid rgba(78, 205, 196, 0.7);
+                background: rgba(0, 0, 0, 0.35);
+            }
+            .premake-frame {
+                width: 100%;
+                height: 100%;
+                border: 0;
+                display: block;
+            }
+            .premake-link {
+                font-size: 9px;
+                color: var(--teal);
+                text-decoration: underline;
+            }
+            .premake-modal {
+                position: fixed;
+                inset: 0;
+                z-index: 70;
+                background: rgba(0, 0, 0, 0.9);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+            }
+            .premake-modal.open {
+                display: flex;
+            }
+            .premake-modal__card {
+                width: min(96vw, 560px);
+                background: var(--card-bg);
+                border: 3px solid var(--orange);
+                outline: 2px solid var(--teal);
+                outline-offset: 3px;
+                padding: 14px;
+                box-shadow:
+                    0 0 20px rgba(255, 140, 66, 0.4),
+                    0 0 44px rgba(78, 205, 196, 0.18);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            .premake-modal .premake-wrap {
+                width: 100%;
+                max-width: 512px;
             }
 
             /* ── TITLE ───────────────────────────────────── */
@@ -275,7 +364,8 @@
                 color: #b8ecec;
                 font-size: 10px;
                 line-height: 2.3;
-                margin: 18px 0 14px;
+                width: 70%;
+                margin: 18px auto 14px;
                 padding: 14px 18px;
                 border: 1px dashed rgba(78, 205, 196, 0.4);
                 background: rgba(78, 205, 196, 0.04);
@@ -335,7 +425,7 @@
                 50% {
                     box-shadow:
                         4px 4px 0 #000,
-                    0 0 28px var(--orange);
+                        0 0 28px var(--orange);
                 }
             }
             @keyframes anticipationShake {
@@ -484,6 +574,9 @@
                 .card {
                     margin: 0 auto;
                 }
+                .card__face {
+                    padding: 24px 20px 22px;
+                }
             }
         </style>
     </head>
@@ -496,53 +589,89 @@
         </div>
 
         <!-- Landing page card -->
-        <div class="card">
-            <div class="stars-row">★ ★ ★ ★ ★ ★ ★</div>
+        <div id="mainCard" class="card">
+            <div class="card__inner">
+                <div class="card__face card__face--front">
+                    <div class="stars-row">★ ★ ★ ★ ★ ★ ★</div>
 
-            <div class="game-title">ALIEN RAMEN</div>
+                    <div class="game-title">ALIEN RAMEN</div>
 
-            <span class="alien-icon">👾</span>
+                    <span class="alien-icon">👾</span>
 
-            <div class="tagline">~ THE UNIVERSE'S TASTIEST INVASION ~</div>
+                    <div class="tagline">~ THE UNIVERSE'S TASTIEST INVASION ~</div>
 
-            <div class="divider">═══════════════════════</div>
+                    <div class="divider">═══════════════════════</div>
 
-            <div class="description">
-                Somewhere between the stars and your bowl,<br />
-                a delicious threat has arrived.<br /><br />
-                Run your noodle shop. Fight off invaders.<br />
-                <span class="description__chaos">or burn it all down.</span>
-            </div>
+                    <div class="description">
+                        Somewhere between the stars and your bowl,<br />
+                        a delicious threat has arrived.<br /><br />
+                        Run your noodle shop. Fight off invaders.<br />
+                        <span class="description__chaos">or burn it all down.</span>
+                    </div>
 
-            <ul class="features">
-                <li>Run a business with your sibling, it's always a good idea!</li>
-                <li>Co-op Gameplay: Mix business and pleasure!</li>
-                <li>Eat aliens with hand crafted noodles. Yum!</li>
-                <li>Feed and friend NPCs!</li>
-                <li>Pilot a mech customized with stylish hats!</li>
-            </ul>
+                    <ul class="features">
+                        <li>Run a business with your sibling, it's always a good idea!</li>
+                        <li>Co-op Gameplay: Mix business and pleasure!</li>
+                        <li>Feed and befriend regulars!</li>
+                        <li>Pilot a mech customized with stylish hats!</li>
+                    </ul>
 
-            <div class="divider">═══════════════════════</div>
+                    <div class="divider">═══════════════════════</div>
 
-            <button id="comingSoonBtn" class="coming-soon" type="button">▶ COMING SOON ◀</button>
+                    <div class="cta-row">
+                        <button id="premakeBtn" class="coming-soon" type="button">
+                            ▶ TRY THE PREMAKE ◀
+                        </button>
+                        <button id="comingSoonBtn" class="coming-soon" type="button">
+                            ▶ COMING SOON ◀
+                        </button>
+                    </div>
 
-            <div class="marquee-wrap">
-                <span class="marquee-inner">
-                    👾 ALIEN RAMEN &nbsp;·&nbsp; THE TASTIEST INVASION IN THE GALAXY &nbsp;·&nbsp;
-                    🍜 COMING SOON &nbsp;·&nbsp; PREPARE YOUR NOODLES &nbsp;·&nbsp; 👾 ALIEN RAMEN
-                    &nbsp;·&nbsp;
-                </span>
-            </div>
+                    <div class="marquee-wrap">
+                        <span class="marquee-inner">
+                            👾 ALIEN RAMEN &nbsp;·&nbsp; THE TASTIEST INVASION IN THE GALAXY
+                            &nbsp;·&nbsp; 🍜 COMING SOON &nbsp;·&nbsp; PREPARE YOUR NOODLES
+                            &nbsp;·&nbsp; 👾 ALIEN RAMEN &nbsp;·&nbsp;
+                        </span>
+                    </div>
 
-            <div id="blinkText" class="blink-text">*** LOADING NOODLES... PLEASE WAIT ***</div>
+                    <div id="blinkText" class="blink-text">
+                        *** LOADING NOODLES... PLEASE WAIT ***
+                    </div>
 
-            <div class="footer-note">
-                <div id="footerCounter" class="footer-counter">
-                    VISITOR #<span id="visitorCount">000000</span>
+                    <div class="footer-note">
+                        <div id="footerCounter" class="footer-counter">
+                            VISITOR #<span id="visitorCount">000000</span>
+                        </div>
+                        BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 · 800×600 · TURN ON JAVASCRIPT
+                        <br />
+                        © 2026 Elephant Hand Studio
+                    </div>
                 </div>
-                BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 · 800×600 · TURN ON JAVASCRIPT
-                <br />
-                © 2026 Elephant Hand Studio
+                <div class="card__face card__face--back">
+                    <div class="premake-title">ALIEN RAMEN PREMAKE</div>
+                    <div class="premake-wrap">
+                        <iframe
+                            id="premakeFrame"
+                            class="premake-frame"
+                            frameborder="0"
+                            allowfullscreen
+                            loading="lazy"
+                            title="Alien Ramen Premake"
+                            src="about:blank"
+                            data-src="https://itch.io/embed-upload/16063818?color=333333"
+                        ></iframe>
+                    </div>
+                    <a
+                        class="premake-link"
+                        href="https://turnercore.itch.io/alien-ramen-premake"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Open on itch.io
+                    </a>
+                    <button id="backToLandingBtn" class="coming-soon" type="button">◀ BACK</button>
+                </div>
             </div>
         </div>
         <button
@@ -557,6 +686,32 @@
         <audio id="bgm" loop preload="auto">
             <source src="assets/bgm.mi_music-fourth-flight.mp3" type="audio/mpeg" />
         </audio>
+        <div id="premakeModal" class="premake-modal" aria-hidden="true">
+            <div class="premake-modal__card">
+                <div class="premake-title">ALIEN RAMEN PREMAKE</div>
+                <div class="premake-wrap">
+                    <iframe
+                        id="premakeFrameMobile"
+                        class="premake-frame"
+                        frameborder="0"
+                        allowfullscreen
+                        loading="lazy"
+                        title="Alien Ramen Premake Mobile"
+                        src="about:blank"
+                        data-src="https://itch.io/embed-upload/16063818?color=333333"
+                    ></iframe>
+                </div>
+                <a
+                    class="premake-link"
+                    href="https://turnercore.itch.io/alien-ramen-premake"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Open on itch.io
+                </a>
+                <button id="closePremakeModalBtn" class="coming-soon" type="button">◀ BACK</button>
+            </div>
+        </div>
 
         <script>
             const RETRO_FEATURES = {
@@ -677,7 +832,14 @@
             const footerCounter = document.getElementById("footerCounter");
             const visitorCountEl = document.getElementById("visitorCount");
             const soundToggle = document.getElementById("soundToggle");
+            const mainCard = document.getElementById("mainCard");
+            const premakeBtn = document.getElementById("premakeBtn");
             const comingSoonBtn = document.getElementById("comingSoonBtn");
+            const backToLandingBtn = document.getElementById("backToLandingBtn");
+            const premakeFrame = document.getElementById("premakeFrame");
+            const premakeModal = document.getElementById("premakeModal");
+            const premakeFrameMobile = document.getElementById("premakeFrameMobile");
+            const closePremakeModalBtn = document.getElementById("closePremakeModalBtn");
             const blinkTextEl = document.getElementById("blinkText");
             const bgm = document.getElementById("bgm");
             const sfxSelect = new Audio("assets/blipSelect.wav");
@@ -690,6 +852,7 @@
 
             let audioEnabled = RETRO_FEATURES.soundSystem;
             let lastHoverSfxAt = 0;
+            let premakeLoadTimer = null;
             let statusMessages = [
                 "Making Noodles",
                 "Loading Broth",
@@ -836,6 +999,86 @@
                     }, 1400);
                 });
             }
+
+            function openPremake() {
+                if (audioEnabled && bgm && !bgm.paused) {
+                    bgm.pause();
+                }
+                const useMobileModal = window.matchMedia(
+                    "(max-width: 760px), (max-height: 760px)",
+                ).matches;
+                if (useMobileModal) {
+                    if (premakeModal) {
+                        premakeModal.classList.add("open");
+                        premakeModal.setAttribute("aria-hidden", "false");
+                        if (
+                            premakeFrameMobile &&
+                            premakeFrameMobile.src === "about:blank" &&
+                            premakeFrameMobile.dataset.src
+                        ) {
+                            requestAnimationFrame(() => {
+                                premakeFrameMobile.src = premakeFrameMobile.dataset.src;
+                            });
+                        }
+                    }
+                    return;
+                }
+                if (!mainCard) return;
+                mainCard.classList.add("is-flipped");
+                if (premakeLoadTimer) {
+                    clearTimeout(premakeLoadTimer);
+                }
+                premakeLoadTimer = window.setTimeout(() => {
+                    if (
+                        premakeFrame &&
+                        premakeFrame.src === "about:blank" &&
+                        premakeFrame.dataset.src
+                    ) {
+                        premakeFrame.src = premakeFrame.dataset.src;
+                    }
+                }, 680);
+            }
+
+            function closePremake() {
+                if (premakeLoadTimer) {
+                    clearTimeout(premakeLoadTimer);
+                    premakeLoadTimer = null;
+                }
+                if (mainCard) {
+                    mainCard.classList.remove("is-flipped");
+                }
+                if (premakeModal) {
+                    premakeModal.classList.remove("open");
+                    premakeModal.setAttribute("aria-hidden", "true");
+                }
+                // Tear down embed sessions so each open starts clean.
+                if (premakeFrame) {
+                    premakeFrame.src = "about:blank";
+                }
+                if (premakeFrameMobile) {
+                    premakeFrameMobile.src = "about:blank";
+                }
+                if (audioEnabled && bgm && bgm.paused) {
+                    bgm.play().catch(() => {});
+                }
+            }
+
+            if (premakeBtn) {
+                premakeBtn.addEventListener("click", openPremake);
+            }
+            if (backToLandingBtn) {
+                backToLandingBtn.addEventListener("click", closePremake);
+            }
+            if (closePremakeModalBtn) {
+                closePremakeModalBtn.addEventListener("click", closePremake);
+            }
+            document.addEventListener("keydown", (event) => {
+                const cardOpen = mainCard && mainCard.classList.contains("is-flipped");
+                const modalOpen = premakeModal && premakeModal.classList.contains("open");
+                if (event.key === "Escape" && (cardOpen || modalOpen)) {
+                    closePremake();
+                }
+            });
 
             if (RETRO_FEATURES.soundSystem) {
                 setAudioEnabled(true);
