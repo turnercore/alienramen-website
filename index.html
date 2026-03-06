@@ -200,6 +200,13 @@
       background: rgba(78,205,196,.04);
       font-family: 'Courier New', monospace;
     }
+    .description__chaos {
+      display: inline-block;
+      font-style: italic;
+      font-size: calc(10px - 1pt);
+      text-decoration: line-through;
+      opacity: 0.85;
+    }
 
     /* ── FEATURE LIST ────────────────────────────── */
     .features {
@@ -360,10 +367,10 @@
     <div class="divider">═══════════════════════</div>
 
     <div class="description">
-      Somewhere between the stars and the broth,<br>
+      Somewhere between the stars and your bowl,<br>
       a delicious threat has arrived.<br><br>
       Run your noodle shop. Fight off invaders.<br>
-      <em>Or join them.</em>
+      <span class="description__chaos">or burn it all down.</span>
     </div>
 
     <ul class="features">
@@ -524,7 +531,7 @@
     const bgm = document.getElementById('bgm');
     const sfxSelect = new Audio('assets/blipSelect.wav');
     const sfxConfirm = new Audio('assets/hitHurt.wav');
-    const HOVER_SFX_COOLDOWN_MS = 150;
+    const HOVER_SFX_COOLDOWN_MS = 1200;
     sfxSelect.preload = 'auto';
     sfxConfirm.preload = 'auto';
     sfxSelect.volume = 0.315;
