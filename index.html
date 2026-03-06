@@ -34,8 +34,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                overflow: hidden;
+                overflow-x: hidden;
+                overflow-y: auto;
                 font-family: "Press Start 2P", "Courier New", monospace;
+                padding: 24px 0;
             }
             body.booting .card {
                 opacity: 0;
@@ -473,6 +475,15 @@
             .sound-toggle.muted {
                 color: rgba(255, 255, 255, 0.7);
                 border-color: rgba(255, 255, 255, 0.5);
+            }
+            @media (max-width: 640px), (max-height: 760px) {
+                body {
+                    align-items: flex-start;
+                    padding: 14px 0 20px;
+                }
+                .card {
+                    margin: 0 auto;
+                }
             }
         </style>
     </head>
