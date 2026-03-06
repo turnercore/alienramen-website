@@ -1,250 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Alien Ramen – a cosmic ramen adventure game from another dimension. Wishlist now!"
-    />
-    <title>Alien Ramen – A Cosmic Ramen Adventure</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- Starfield canvas background -->
-    <canvas id="starfield" aria-hidden="true"></canvas>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALIEN RAMEN</title>
+  <!-- Alien invader emoji favicon via SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #FF8C42;
+      --teal:   #4ECDC4;
+      --white:  #FFFFFF;
+      --dark:   #04040e;
+      --card-bg: rgba(4, 4, 20, 0.93);
+    }
 
-    <!-- Navigation -->
-    <nav class="nav" id="nav">
-      <div class="nav__inner">
-        <a class="nav__logo" href="#hero">
-          <span class="nav__logo-icon">🍜</span>
-          <span>Alien Ramen</span>
-        </a>
-        <ul class="nav__links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#signup">Stay Updated</a></li>
-        </ul>
-        <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </nav>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- Mobile menu -->
-    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-      <ul>
-        <li><a href="#about" class="mobile-menu__link">About</a></li>
-        <li><a href="#features" class="mobile-menu__link">Features</a></li>
-        <li><a href="#signup" class="mobile-menu__link">Stay Updated</a></li>
-      </ul>
+    body {
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+    }
+
+    /* ── CANVAS BACKGROUND ───────────────────────── */
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* ── CARD ────────────────────────────────────── */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--card-bg);
+      border: 3px solid var(--orange);
+      outline: 2px solid var(--teal);
+      outline-offset: 5px;
+      padding: 36px 48px 32px;
+      max-width: 700px;
+      width: 92vw;
+      text-align: center;
+      box-shadow:
+        0 0 25px rgba(255,140,66,.45),
+        0 0 60px rgba(78,205,196,.2),
+        inset 0 0 50px rgba(0,0,0,.6);
+    }
+
+    /* ── TITLE ───────────────────────────────────── */
+    .stars-row {
+      color: var(--teal);
+      font-size: 13px;
+      letter-spacing: 10px;
+      margin-bottom: 18px;
+      text-shadow: 0 0 8px var(--teal);
+    }
+
+    .game-title {
+      font-size: clamp(26px, 6vw, 44px);
+      letter-spacing: 6px;
+      text-shadow: 4px 4px 0 #000, 0 0 22px currentColor;
+      margin-bottom: 4px;
+      animation: titleCycle 6s linear infinite;
+    }
+    @keyframes titleCycle {
+      0%,100% { color: var(--orange); }
+      33%      { color: var(--teal);   }
+      66%      { color: var(--white);  }
+    }
+
+    /* ── ALIEN ICON ──────────────────────────────── */
+    .alien-icon {
+      font-size: 70px;
+      display: block;
+      margin: 18px auto;
+      line-height: 1;
+      animation: float 2.2s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+
+    /* ── DIVIDERS & TAGLINE ──────────────────────── */
+    .divider {
+      color: var(--orange);
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin: 14px 0;
+      text-shadow: 0 0 8px var(--orange);
+    }
+
+    .tagline {
+      color: var(--teal);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px var(--teal);
+      margin: 10px 0;
+    }
+
+    /* ── DESCRIPTION BOX ─────────────────────────── */
+    .description {
+      color: #b8ecec;
+      font-size: 10px;
+      line-height: 2.3;
+      margin: 18px 0 14px;
+      padding: 14px 18px;
+      border: 1px dashed rgba(78,205,196,.4);
+      background: rgba(78,205,196,.04);
+      font-family: 'Courier New', monospace;
+    }
+
+    /* ── FEATURE LIST ────────────────────────────── */
+    .features {
+      text-align: left;
+      list-style: none;
+      color: var(--teal);
+      font-size: 9px;
+      line-height: 2.6;
+      margin: 8px auto 14px;
+      max-width: 420px;
+      font-family: 'Courier New', monospace;
+    }
+    .features li::before { content: '> '; color: var(--orange); }
+
+    /* ── COMING SOON BADGE ───────────────────────── */
+    .coming-soon {
+      display: inline-block;
+      background: var(--orange);
+      color: #000;
+      padding: 10px 26px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      box-shadow: 4px 4px 0 #000, 0 0 16px var(--orange);
+      margin: 14px 0 10px;
+      animation: badgeGlow 2s ease-in-out infinite;
+    }
+    @keyframes badgeGlow {
+      0%,100% { box-shadow: 4px 4px 0 #000, 0 0 10px var(--orange); }
+      50%      { box-shadow: 4px 4px 0 #000, 0 0 28px var(--orange); }
+    }
+
+    /* ── BLINK & FOOTER ──────────────────────────── */
+    .blink-text {
+      color: var(--white);
+      font-size: 8px;
+      letter-spacing: 1px;
+      margin-top: 14px;
+      animation: blink 1.2s step-start infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    .marquee-wrap {
+      overflow: hidden;
+      margin: 14px 0 6px;
+      border-top: 1px solid rgba(78,205,196,.25);
+      border-bottom: 1px solid rgba(78,205,196,.25);
+      padding: 6px 0;
+    }
+    .marquee-inner {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marqueeScroll 18s linear infinite;
+      color: var(--orange);
+      font-size: 8px;
+      letter-spacing: 2px;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(100vw); }
+      to   { transform: translateX(-100%); }
+    }
+
+    .footer-note {
+      color: rgba(255,255,255,.25);
+      font-size: 6.5px;
+      margin-top: 18px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Diagonal scrolling "ALIEN RAMEN" background -->
+  <canvas id="bg"></canvas>
+
+  <!-- Landing page card -->
+  <div class="card">
+    <div class="stars-row">★ ★ ★ ★ ★ ★ ★</div>
+
+    <div class="game-title">ALIEN RAMEN</div>
+
+    <span class="alien-icon">👾</span>
+
+    <div class="tagline">~ THE UNIVERSE'S TASTIEST INVASION ~</div>
+
+    <div class="divider">═══════════════════════</div>
+
+    <div class="description">
+      Somewhere between the stars and the broth,<br>
+      a delicious threat has arrived.<br><br>
+      Run your noodle shop. Fight off invaders.<br>
+      <em>Or join them.</em>
     </div>
 
-    <main>
-      <!-- Hero Section -->
-      <section class="hero" id="hero">
-        <div class="hero__content">
-          <p class="hero__eyebrow">From Another Dimension</p>
-          <h1 class="hero__title">
-            <span class="hero__title-alien">Alien</span>
-            <span class="hero__title-ramen">Ramen</span>
-          </h1>
-          <p class="hero__tagline">
-            A cosmic ramen adventure that's out of this world.
-          </p>
-          <div class="hero__actions">
-            <a href="#signup" class="btn btn--primary">Wishlist Now</a>
-            <a href="#about" class="btn btn--secondary">Learn More</a>
-          </div>
-          <div class="hero__badge">
-            <span class="badge badge--coming-soon">Coming Soon</span>
-          </div>
-        </div>
-        <div class="hero__graphic" aria-hidden="true">
-          <div class="bowl-wrapper">
-            <div class="bowl">
-              <div class="steam steam--1"></div>
-              <div class="steam steam--2"></div>
-              <div class="steam steam--3"></div>
-              <div class="bowl__contents">
-                <div class="noodle noodle--1"></div>
-                <div class="noodle noodle--2"></div>
-                <div class="noodle noodle--3"></div>
-                <div class="topping topping--alien">👾</div>
-              </div>
-            </div>
-            <div class="bowl__shadow"></div>
-          </div>
-        </div>
-      </section>
+    <ul class="features">
+      <li>PIXEL-PERFECT NOODLE PHYSICS</li>
+      <li>INTERGALACTIC FLAVOR COMBOS</li>
+      <li>ALIEN CUSTOMER AI</li>
+      <li>RAMEN DEFENSE SYSTEMS</li>
+    </ul>
 
-      <!-- About Section -->
-      <section class="section about" id="about">
-        <div class="container">
-          <h2 class="section__title">What is Alien Ramen?</h2>
-          <p class="section__subtitle">
-            Part restaurant sim, part intergalactic adventure. Serve up bowls of
-            cosmic ramen to hungry aliens from across the universe before they
-            take matters into their own tentacles.
-          </p>
-          <div class="about__cards">
-            <div class="card">
-              <div class="card__icon">🌌</div>
-              <h3 class="card__title">Cosmic Setting</h3>
-              <p class="card__body">
-                Run your noodle shop aboard a space station at the crossroads of
-                the galaxy. Every customer brings a story from a distant star
-                system.
-              </p>
-            </div>
-            <div class="card">
-              <div class="card__icon">🍥</div>
-              <h3 class="card__title">Ramen Crafting</h3>
-              <p class="card__body">
-                Experiment with alien ingredients and interdimensional broths to
-                discover hundreds of unique ramen recipes that satisfy the most
-                exotic palates.
-              </p>
-            </div>
-            <div class="card">
-              <div class="card__icon">👽</div>
-              <h3 class="card__title">Quirky Characters</h3>
-              <p class="card__body">
-                Meet a cast of eccentric alien regulars, each with their own
-                cravings, backstories, and universe-sized personalities.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div class="divider">═══════════════════════</div>
 
-      <!-- Features Section -->
-      <section class="section features" id="features">
-        <div class="container">
-          <h2 class="section__title">Features</h2>
-          <p class="section__subtitle">
-            Everything you need for an out-of-this-world noodle experience.
-          </p>
-          <ul class="features__list">
-            <li class="feature">
-              <span class="feature__icon">🧬</span>
-              <div class="feature__text">
-                <h3>Procedural Recipes</h3>
-                <p>
-                  A near-infinite combination of ingredients means no two
-                  bowls — or play-throughs — are ever the same.
-                </p>
-              </div>
-            </li>
-            <li class="feature">
-              <span class="feature__icon">🌠</span>
-              <div class="feature__text">
-                <h3>Story-Driven Campaign</h3>
-                <p>
-                  Unravel an epic narrative spanning multiple galaxies as you
-                  grow from a humble noodle chef to a cosmic culinary legend.
-                </p>
-              </div>
-            </li>
-            <li class="feature">
-              <span class="feature__icon">🎵</span>
-              <div class="feature__text">
-                <h3>Original Soundtrack</h3>
-                <p>
-                  Immerse yourself in a genre-blending score mixing lo-fi hip
-                  hop with extraterrestrial sounds from across the cosmos.
-                </p>
-              </div>
-            </li>
-            <li class="feature">
-              <span class="feature__icon">🏆</span>
-              <div class="feature__text">
-                <h3>Leaderboards &amp; Achievements</h3>
-                <p>
-                  Compete with friends and players across the galaxy to become
-                  the universe's top-rated ramen chef.
-                </p>
-              </div>
-            </li>
-            <li class="feature">
-              <span class="feature__icon">🖥️</span>
-              <div class="feature__text">
-                <h3>Cross-Platform</h3>
-                <p>
-                  Play on PC, console, and mobile — your ramen empire travels
-                  with you wherever the stars take you.
-                </p>
-              </div>
-            </li>
-            <li class="feature">
-              <span class="feature__icon">🔄</span>
-              <div class="feature__text">
-                <h3>Regular Updates</h3>
-                <p>
-                  New alien customers, ingredients, and story chapters added
-                  post-launch to keep the adventure expanding.
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </section>
+    <div class="coming-soon">▶ COMING SOON ◀</div>
 
-      <!-- Sign-up / CTA Section -->
-      <section class="section signup" id="signup">
-        <div class="container">
-          <h2 class="section__title">Stay in the Loop</h2>
-          <p class="section__subtitle">
-            Sign up for launch updates, exclusive in-game items, and early
-            access opportunities. No spam, just cosmic ramen news.
-          </p>
-          <form class="signup__form" id="signupForm" novalidate>
-            <div class="signup__fields">
-              <label for="emailInput" class="visually-hidden">
-                Your email address
-              </label>
-              <input
-                type="email"
-                id="emailInput"
-                name="email"
-                class="signup__input"
-                placeholder="your@email.com"
-                required
-                autocomplete="email"
-              />
-              <button type="submit" class="btn btn--primary signup__btn">
-                Notify Me
-              </button>
-            </div>
-            <p class="signup__message" id="signupMessage" aria-live="polite"></p>
-            <p class="signup__disclaimer">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
-          </form>
-        </div>
-      </section>
-    </main>
+    <div class="marquee-wrap">
+      <span class="marquee-inner">
+        👾 ALIEN RAMEN &nbsp;·&nbsp; THE TASTIEST INVASION IN THE GALAXY &nbsp;·&nbsp;
+        🍜 COMING SOON &nbsp;·&nbsp; PREPARE YOUR NOODLES &nbsp;·&nbsp;
+        👾 ALIEN RAMEN &nbsp;·&nbsp;
+      </span>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container footer__inner">
-        <p class="footer__brand">
-          <span>🍜</span> Alien Ramen
-        </p>
-        <p class="footer__copy">
-          &copy; <span id="year"></span> Alien Ramen. All rights reserved.
-        </p>
-        <nav class="footer__links" aria-label="Footer navigation">
-          <a href="#about">About</a>
-          <a href="#features">Features</a>
-          <a href="#signup">Stay Updated</a>
-        </nav>
-      </div>
-    </footer>
+    <div class="blink-text">*** LOADING NOODLES... PLEASE WAIT ***</div>
 
-    <script src="script.js"></script>
-  </body>
+    <div class="footer-note">
+      BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 · 800×600 · TURN ON JAVASCRIPT
+    </div>
+  </div>
+
+  <script>
+    // ── Canvas diagonal scrolling background ──────────────────────────────────
+    const canvas = document.getElementById('bg');
+    const ctx    = canvas.getContext('2d');
+
+    const COLORS    = ['#FF8C42', '#4ECDC4', '#FFFFFF'];
+    const TEXT      = 'ALIEN RAMEN   ';
+    const FONT_SIZE = 20;
+    const ANGLE     = -Math.PI / 6;   // –30 °  (diagonal)
+    const SPEED     = 0.55;           // px per frame
+
+    let offset    = 0;
+    let textWidth = 0;
+    let rowHeight = FONT_SIZE * 1.85;
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Re-measure after resize (font may change on hi-DPI)
+      setFont();
+      textWidth = ctx.measureText(TEXT).width;
+      rowHeight = FONT_SIZE * 1.85;
+    }
+
+    function setFont() {
+      ctx.font = `bold ${FONT_SIZE}px 'Press Start 2P', 'Courier New', monospace`;
+    }
+
+    // Smooth color cycling: each cell has its own time offset
+    function getColor(cellIndex, timestamp) {
+      const cycleMs  = 2800;                        // ms for one full color cycle
+      const stagger  = 550;                         // ms offset between cells
+      const period   = cycleMs * COLORS.length;
+      // Math.abs(cellIndex) keeps the stagger positive so the modulo is always >= 0
+      const t        = (timestamp + Math.abs(cellIndex) * stagger) % period;
+      const idx      = Math.floor(t / cycleMs) % COLORS.length;
+      const next     = (idx + 1)                   % COLORS.length;
+      const frac     = (t % cycleMs) / cycleMs;
+
+      const c1 = hexToRgb(COLORS[idx]);
+      const c2 = hexToRgb(COLORS[next]);
+      return `rgb(${lerp(c1.r,c2.r,frac)|0},${lerp(c1.g,c2.g,frac)|0},${lerp(c1.b,c2.b,frac)|0})`;
+    }
+
+    function hexToRgb(hex) {
+      return {
+        r: parseInt(hex.slice(1,3), 16),
+        g: parseInt(hex.slice(3,5), 16),
+        b: parseInt(hex.slice(5,7), 16),
+      };
+    }
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function draw(timestamp) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setFont();
+
+      if (textWidth === 0) textWidth = ctx.measureText(TEXT).width;
+
+      ctx.globalAlpha = 0.26;
+      ctx.save();
+
+      // Centre the rotated grid over the viewport
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(ANGLE);
+
+      const diag    = Math.hypot(canvas.width, canvas.height);
+      const numCols = Math.ceil(diag / textWidth)  + 4;
+      const numRows = Math.ceil(diag / rowHeight)  + 4;
+      const startX  = -diag / 2;
+      const startY  = -diag / 2;
+
+      // Seamless scroll: advance only by (offset % textWidth) so the grid tiles
+      const cellOffsetX = offset % textWidth;
+
+      for (let row = 0; row < numRows; row++) {
+        // Brick-pattern horizontal stagger per row keeps the pattern from
+        // looking like a boring stripe and reinforces the diagonal feel.
+        const brickShift = (row % 2) * (textWidth / 2);
+
+        for (let col = -1; col < numCols; col++) {
+          const x = startX + col * textWidth - cellOffsetX + brickShift;
+          const y = startY + row * rowHeight;
+
+          ctx.fillStyle = getColor(row * numCols + col, timestamp);
+          ctx.fillText(TEXT, x, y);
+        }
+      }
+
+      ctx.restore();
+
+      offset += SPEED;
+      // Prevent the offset from growing unboundedly (keep it in one tile period)
+      if (offset > textWidth * 200) offset = 0;
+
+      requestAnimationFrame(draw);
+    }
+
+    // Start everything up
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(draw);
+  </script>
+</body>
 </html>
