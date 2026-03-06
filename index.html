@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALIEN RAMEN</title>
+  <!-- Alien invader emoji favicon via SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #FF8C42;
+      --teal:   #4ECDC4;
+      --white:  #FFFFFF;
+      --dark:   #04040e;
+      --card-bg: rgba(4, 4, 20, 0.93);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+    }
+
+    /* ── CANVAS BACKGROUND ───────────────────────── */
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* ── CARD ────────────────────────────────────── */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--card-bg);
+      border: 3px solid var(--orange);
+      outline: 2px solid var(--teal);
+      outline-offset: 5px;
+      padding: 36px 48px 32px;
+      max-width: 700px;
+      width: 92vw;
+      text-align: center;
+      box-shadow:
+        0 0 25px rgba(255,140,66,.45),
+        0 0 60px rgba(78,205,196,.2),
+        inset 0 0 50px rgba(0,0,0,.6);
+    }
+
+    /* ── TITLE ───────────────────────────────────── */
+    .stars-row {
+      color: var(--teal);
+      font-size: 13px;
+      letter-spacing: 10px;
+      margin-bottom: 18px;
+      text-shadow: 0 0 8px var(--teal);
+    }
+
+    .game-title {
+      font-size: clamp(26px, 6vw, 44px);
+      letter-spacing: 6px;
+      text-shadow: 4px 4px 0 #000, 0 0 22px currentColor;
+      margin-bottom: 4px;
+      animation: titleCycle 6s linear infinite;
+    }
+    @keyframes titleCycle {
+      0%,100% { color: var(--orange); }
+      33%      { color: var(--teal);   }
+      66%      { color: var(--white);  }
+    }
+
+    /* ── ALIEN ICON ──────────────────────────────── */
+    .alien-icon {
+      font-size: 70px;
+      display: block;
+      margin: 18px auto;
+      line-height: 1;
+      animation: float 2.2s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+
+    /* ── DIVIDERS & TAGLINE ──────────────────────── */
+    .divider {
+      color: var(--orange);
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin: 14px 0;
+      text-shadow: 0 0 8px var(--orange);
+    }
+
+    .tagline {
+      color: var(--teal);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px var(--teal);
+      margin: 10px 0;
+    }
+
+    /* ── DESCRIPTION BOX ─────────────────────────── */
+    .description {
+      color: #b8ecec;
+      font-size: 10px;
+      line-height: 2.3;
+      margin: 18px 0 14px;
+      padding: 14px 18px;
+      border: 1px dashed rgba(78,205,196,.4);
+      background: rgba(78,205,196,.04);
+      font-family: 'Courier New', monospace;
+    }
+
+    /* ── FEATURE LIST ────────────────────────────── */
+    .features {
+      text-align: left;
+      list-style: none;
+      color: var(--teal);
+      font-size: 9px;
+      line-height: 2.6;
+      margin: 8px auto 14px;
+      max-width: 420px;
+      font-family: 'Courier New', monospace;
+    }
+    .features li::before { content: '> '; color: var(--orange); }
+
+    /* ── COMING SOON BADGE ───────────────────────── */
+    .coming-soon {
+      display: inline-block;
+      background: var(--orange);
+      color: #000;
+      padding: 10px 26px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      box-shadow: 4px 4px 0 #000, 0 0 16px var(--orange);
+      margin: 14px 0 10px;
+      animation: badgeGlow 2s ease-in-out infinite;
+    }
+    @keyframes badgeGlow {
+      0%,100% { box-shadow: 4px 4px 0 #000, 0 0 10px var(--orange); }
+      50%      { box-shadow: 4px 4px 0 #000, 0 0 28px var(--orange); }
+    }
+
+    /* ── BLINK & FOOTER ──────────────────────────── */
+    .blink-text {
+      color: var(--white);
+      font-size: 8px;
+      letter-spacing: 1px;
+      margin-top: 14px;
+      animation: blink 1.2s step-start infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    .marquee-wrap {
+      overflow: hidden;
+      margin: 14px 0 6px;
+      border-top: 1px solid rgba(78,205,196,.25);
+      border-bottom: 1px solid rgba(78,205,196,.25);
+      padding: 6px 0;
+    }
+    .marquee-inner {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marqueeScroll 18s linear infinite;
+      color: var(--orange);
+      font-size: 8px;
+      letter-spacing: 2px;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(100vw); }
+      to   { transform: translateX(-100%); }
+    }
+
+    .footer-note {
+      color: rgba(255,255,255,.25);
+      font-size: 6.5px;
+      margin-top: 18px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Diagonal scrolling "ALIEN RAMEN" background -->
+  <canvas id="bg"></canvas>
+
+  <!-- Landing page card -->
+  <div class="card">
+    <div class="stars-row">★ ★ ★ ★ ★ ★ ★</div>
+
+    <div class="game-title">ALIEN RAMEN</div>
+
+    <span class="alien-icon">👾</span>
+
+    <div class="tagline">~ THE UNIVERSE'S TASTIEST INVASION ~</div>
+
+    <div class="divider">═══════════════════════</div>
+
+    <div class="description">
+      Somewhere between the stars and the broth,<br>
+      a delicious threat has arrived.<br><br>
+      Run your noodle shop. Fight off invaders.<br>
+      <em>Or join them.</em>
+    </div>
+
+    <ul class="features">
+      <li>PIXEL-PERFECT NOODLE PHYSICS</li>
+      <li>INTERGALACTIC FLAVOR COMBOS</li>
+      <li>ALIEN CUSTOMER AI</li>
+      <li>RAMEN DEFENSE SYSTEMS</li>
+    </ul>
+
+    <div class="divider">═══════════════════════</div>
+
+    <div class="coming-soon">▶ COMING SOON ◀</div>
+
+    <div class="marquee-wrap">
+      <span class="marquee-inner">
+        👾 ALIEN RAMEN &nbsp;·&nbsp; THE TASTIEST INVASION IN THE GALAXY &nbsp;·&nbsp;
+        🍜 COMING SOON &nbsp;·&nbsp; PREPARE YOUR NOODLES &nbsp;·&nbsp;
+        👾 ALIEN RAMEN &nbsp;·&nbsp;
+      </span>
+    </div>
+
+    <div class="blink-text">*** LOADING NOODLES... PLEASE WAIT ***</div>
+
+    <div class="footer-note">
+      BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 · 800×600 · TURN ON JAVASCRIPT
+    </div>
+  </div>
+
+  <script>
+    // ── Canvas diagonal scrolling background ──────────────────────────────────
+    const canvas = document.getElementById('bg');
+    const ctx    = canvas.getContext('2d');
+
+    const COLORS    = ['#FF8C42', '#4ECDC4', '#FFFFFF'];
+    const TEXT      = 'ALIEN RAMEN   ';
+    const FONT_SIZE = 20;
+    const ANGLE     = -Math.PI / 6;   // –30 °  (diagonal)
+    const SPEED     = 0.55;           // px per frame
+
+    let offset    = 0;
+    let textWidth = 0;
+    let rowHeight = FONT_SIZE * 1.85;
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Re-measure after resize (font may change on hi-DPI)
+      setFont();
+      textWidth = ctx.measureText(TEXT).width;
+      rowHeight = FONT_SIZE * 1.85;
+    }
+
+    function setFont() {
+      ctx.font = `bold ${FONT_SIZE}px 'Press Start 2P', 'Courier New', monospace`;
+    }
+
+    // Smooth color cycling: each cell has its own time offset
+    function getColor(cellIndex, timestamp) {
+      const cycleMs  = 2800;                        // ms for one full color cycle
+      const stagger  = 550;                         // ms offset between cells
+      const period   = cycleMs * COLORS.length;
+      // Math.abs(cellIndex) keeps the stagger positive so the modulo is always >= 0
+      const t        = (timestamp + Math.abs(cellIndex) * stagger) % period;
+      const idx      = Math.floor(t / cycleMs) % COLORS.length;
+      const next     = (idx + 1)                   % COLORS.length;
+      const frac     = (t % cycleMs) / cycleMs;
+
+      const c1 = hexToRgb(COLORS[idx]);
+      const c2 = hexToRgb(COLORS[next]);
+      return `rgb(${lerp(c1.r,c2.r,frac)|0},${lerp(c1.g,c2.g,frac)|0},${lerp(c1.b,c2.b,frac)|0})`;
+    }
+
+    function hexToRgb(hex) {
+      return {
+        r: parseInt(hex.slice(1,3), 16),
+        g: parseInt(hex.slice(3,5), 16),
+        b: parseInt(hex.slice(5,7), 16),
+      };
+    }
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function draw(timestamp) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setFont();
+
+      if (textWidth === 0) textWidth = ctx.measureText(TEXT).width;
+
+      ctx.globalAlpha = 0.26;
+      ctx.save();
+
+      // Centre the rotated grid over the viewport
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(ANGLE);
+
+      const diag    = Math.hypot(canvas.width, canvas.height);
+      const numCols = Math.ceil(diag / textWidth)  + 4;
+      const numRows = Math.ceil(diag / rowHeight)  + 4;
+      const startX  = -diag / 2;
+      const startY  = -diag / 2;
+
+      // Seamless scroll: advance only by (offset % textWidth) so the grid tiles
+      const cellOffsetX = offset % textWidth;
+
+      for (let row = 0; row < numRows; row++) {
+        // Brick-pattern horizontal stagger per row keeps the pattern from
+        // looking like a boring stripe and reinforces the diagonal feel.
+        const brickShift = (row % 2) * (textWidth / 2);
+
+        for (let col = -1; col < numCols; col++) {
+          const x = startX + col * textWidth - cellOffsetX + brickShift;
+          const y = startY + row * rowHeight;
+
+          ctx.fillStyle = getColor(row * numCols + col, timestamp);
+          ctx.fillText(TEXT, x, y);
+        }
+      }
+
+      ctx.restore();
+
+      offset += SPEED;
+      // Prevent the offset from growing unboundedly (keep it in one tile period)
+      if (offset > textWidth * 200) offset = 0;
+
+      requestAnimationFrame(draw);
+    }
+
+    // Start everything up
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
