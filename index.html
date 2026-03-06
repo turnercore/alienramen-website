@@ -317,6 +317,12 @@
                 margin: 14px 0 10px;
                 animation: badgeGlow 2s ease-in-out infinite;
             }
+            .coming-soon:hover {
+                transform: scale(1.008);
+                animation:
+                    badgeGlow 2s ease-in-out infinite,
+                    anticipationShake 0.09s linear infinite;
+            }
             @keyframes badgeGlow {
                 0%,
                 100% {
@@ -327,7 +333,19 @@
                 50% {
                     box-shadow:
                         4px 4px 0 #000,
-                        0 0 28px var(--orange);
+                    0 0 28px var(--orange);
+                }
+            }
+            @keyframes anticipationShake {
+                0%,
+                100% {
+                    transform: scale(1.008) translateX(0);
+                }
+                25% {
+                    transform: scale(1.008) translateX(-0.8px);
+                }
+                75% {
+                    transform: scale(1.008) translateX(0.8px);
                 }
             }
 
