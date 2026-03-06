@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👾 ALIEN RAMEN 👾</title>
+  <!-- Alien invader emoji favicon via inline SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>" />
+  <!-- Pixel game font for the title -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Design Tokens ──────────────────────────────────────── */
+    :root {
+      --orange : #FFAA6E;   /* pastel orange  */
+      --teal   : #7ECEC4;   /* pastel teal    */
+      --white  : #F0F0FF;   /* slightly-blue white */
+      --dark   : #050516;   /* deep-space navy */
+      --card   : rgba(6, 6, 38, 0.93);
+    }
+
+    /* ─── Body ───────────────────────────────────────────────── */
+    body {
+      min-height: 100vh;
+      background: var(--dark);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Bradley Hand', cursive;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       DIAGONAL SCROLLING BACKGROUND
+    ════════════════════════════════════════════════════════════ */
+    .bg-container {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* This wrapper is rotated –45° so that the vertical scroll
+       of the inner rows appears diagonal on screen. It must be
+       large enough to tile the full viewport even when tilted. */
+    .bg-rotated {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 260%;          /* wider than diagonal of viewport  */
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    /* The scroll strip holds 2 × N rows; animating to –50 % gives
+       a seamless infinite loop because the bottom half is a copy
+       of the top half. */
+    .bg-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      animation: bg-diagonal 28s linear infinite;
+    }
+
+    @keyframes bg-diagonal {
+      from { transform: translateY(0);    }
+      to   { transform: translateY(-50%); }
+    }
+
+    /* ─── Row colour cycling ─────────────────────────────────── */
+    .bg-row {
+      white-space: nowrap;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.35em;
+      opacity: 0.28;
+      user-select: none;
+    }
+
+    /* Stagger starting colour across three row groups */
+    .bg-row:nth-child(3n + 1) { animation: color-cycle 9s  0s linear infinite; }
+    .bg-row:nth-child(3n + 2) { animation: color-cycle 9s  3s linear infinite; }
+    .bg-row:nth-child(3n + 3) { animation: color-cycle 9s  6s linear infinite; }
+
+    @keyframes color-cycle {
+      0%   { color: var(--orange); }
+      33%  { color: var(--teal);   }
+      66%  { color: var(--white);  }
+      100% { color: var(--orange); }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       MAIN CARD
+    ════════════════════════════════════════════════════════════ */
+    .page-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: var(--card);
+      border: 3px solid var(--orange);
+      outline: 1px solid var(--teal);
+      outline-offset: 4px;
+      border-radius: 6px;
+      padding: 2.5rem 2.5rem 2rem;
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 0 45px rgba(255, 170, 110, 0.45),
+        0 0 90px rgba(126, 206, 196, 0.20),
+        inset 0 0 50px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ─── Card: decorative top strip ────────────────────────── */
+    .deco-top {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--teal);
+      letter-spacing: 0.3em;
+    }
+
+    /* ─── Game title ─────────────────────────────────────────── */
+    .game-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.6rem, 6vw, 3rem);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      animation: title-color 9s linear infinite;
+      text-shadow: 0 0 18px currentColor, 0 0 36px currentColor;
+      margin-bottom: 0.5rem;
+    }
+
+    @keyframes title-color {
+      0%   { color: var(--orange); }
+      33%  { color: var(--teal);   }
+      66%  { color: var(--white);  }
+      100% { color: var(--orange); }
+    }
+
+    /* ─── Sub-title ──────────────────────────────────────────── */
+    .subtitle {
+      color: var(--teal);
+      font-size: 0.95rem;
+      font-style: italic;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.4rem;
+    }
+
+    /* ─── Dividers ───────────────────────────────────────────── */
+    .divider {
+      color: var(--orange);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      overflow: hidden;
+      margin: 1.2rem 0;
+      white-space: nowrap;
+    }
+    .divider-teal { color: var(--teal); }
+
+    /* ─── Emoji showcase ─────────────────────────────────────── */
+    .alien-showcase {
+      font-size: 3.2rem;
+      margin: 0.5rem 0 1rem;
+      line-height: 1;
+    }
+
+    /* ─── Description ────────────────────────────────────────── */
+    .description {
+      color: #c8c8e8;
+      font-size: 1rem;
+      line-height: 1.9;
+      margin-bottom: 0.5rem;
+    }
+    .description strong { color: var(--orange); }
+
+    /* ─── Feature list ───────────────────────────────────────── */
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin: 0.8rem 0;
+      text-align: left;
+    }
+    .feature-item {
+      color: var(--white);
+      font-size: 0.92rem;
+    }
+
+    /* ─── Coming Soon blinking badge ─────────────────────────── */
+    .coming-soon {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1rem, 3.5vw, 1.6rem);
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin: 1.5rem 0 0.75rem;
+      animation: blink-glow 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes blink-glow {
+      from {
+        color: var(--orange);
+        text-shadow: 0 0 12px var(--orange), 0 0 24px var(--orange);
+        opacity: 1;
+      }
+      to {
+        color: var(--teal);
+        text-shadow: 0 0 18px var(--teal), 0 0 36px var(--teal), 0 0 54px var(--teal);
+        opacity: 0.80;
+      }
+    }
+
+    /* ─── Hint text ──────────────────────────────────────────── */
+    .hint {
+      color: #9898b8;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    /* ─── Card footer (fake 90s extras) ─────────────────────── */
+    .card-footer {
+      margin-top: 1.8rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(126, 206, 196, 0.25);
+      color: #666688;
+      font-size: 0.68rem;
+      line-height: 1.8;
+    }
+    .card-footer .counter { color: var(--orange); font-weight: bold; }
+    .card-footer .net-note { color: var(--teal); font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Diagonal scrolling background ─────────────────────── -->
+  <div class="bg-container" aria-hidden="true">
+    <div class="bg-rotated">
+      <div class="bg-scroll" id="bgScroll"></div>
+    </div>
+  </div>
+
+  <!-- ── Main landing card ──────────────────────────────────── -->
+  <div class="page-wrapper">
+    <div class="card">
+
+      <div class="deco-top">✨ 👾 ✨ 🍜 ✨ 👾 ✨</div>
+
+      <h1 class="game-title">ALIEN RAMEN</h1>
+      <p class="subtitle">*~* A Space Invader Ramen Sim *~*</p>
+
+      <div class="divider">═══════════════════════════════════════════</div>
+
+      <div class="alien-showcase">👾 &nbsp; 🍜 &nbsp; 👾</div>
+
+      <p class="description">
+        From the <strong>outer reaches of the cosmos</strong> comes an invasion<br />
+        unlike any other! Master the ancient art of <strong>intergalactic ramen</strong><br />
+        crafting before the aliens conquer your kitchen—and your planet!
+      </p>
+
+      <div class="divider divider-teal">～～～～～～～～～～～～～～～～～～～～～～～～</div>
+
+      <div class="features">
+        <div class="feature-item">🚀 &nbsp;&nbsp; Craft exotic alien ramen recipes</div>
+        <div class="feature-item">👾 &nbsp;&nbsp; Battle invaders with culinary prowess</div>
+        <div class="feature-item">🍜 &nbsp;&nbsp; Unlock cosmic noodle ingredients</div>
+        <div class="feature-item">🌌 &nbsp;&nbsp; Explore the infinite Noodle-verse</div>
+        <div class="feature-item">⭐ &nbsp;&nbsp; Earn 5-star reviews from alien food critics</div>
+      </div>
+
+      <div class="divider">═══════════════════════════════════════════</div>
+
+      <div class="coming-soon">⚡ COMING SOON ⚡</div>
+
+      <p class="hint">👆 Bookmark this page and check back for updates! 👆</p>
+
+      <div class="card-footer">
+        <div>Visitors: <span class="counter">1,337,420</span></div>
+        <div>© 1999–2025 Alien Ramen Inc. · All Rights Reserved.</div>
+        <div class="net-note">Best viewed in 800×600 · Netscape Navigator 4.0 recommended</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Generate the diagonal scrolling background rows.
+    // We create ROW_COUNT rows, then duplicate them for a seamless
+    // CSS translateY(-50 %) infinite loop.
+    (function () {
+      var el       = document.getElementById('bgScroll');
+      var ROW_COUNT = 60;
+      // Fill each row with enough text to span the (widened) container.
+      // 7 repetitions fills the 260 %-wide rotated container without gaps.
+      var rowText  = 'ALIEN RAMEN \u00a0\u00a0\u00a0 '.repeat(7);
+      var html     = '';
+      for (var i = 0; i < ROW_COUNT * 2; i++) {
+        html += '<div class="bg-row">' + rowText + '</div>\n';
+      }
+      el.innerHTML = html;
+    }());
+  </script>
+
+</body>
+</html>
